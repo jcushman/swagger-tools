@@ -225,7 +225,7 @@ var processOperationParameters = function (swaggerMetadata, pathKeys, pathMatch,
     return next();
   });
 };
-var processSwaggerDocuments = function (rlOrSO, apiDeclarations) {
+var processSwaggerDocuments = function (rlOrSO, apiDeclarations, readyCallback) {
   if (_.isUndefined(rlOrSO)) {
     throw new Error('rlOrSO is required');
   } else if (!_.isPlainObject(rlOrSO)) {
@@ -352,6 +352,9 @@ var processSwaggerDocuments = function (rlOrSO, apiDeclarations) {
           }
         });
       });
+
+      if (!_.isUndefined(readyCallback))
+        readyCallback();
     });
   }
 
@@ -370,10 +373,10 @@ var processSwaggerDocuments = function (rlOrSO, apiDeclarations) {
  *
  * @returns the middleware function
  */
-exports = module.exports = function (rlOrSO, apiDeclarations) {
+exports = module.exports = function (rlOrSO, apiDeclarations, readyCallback) {
   debug('Initializing swagger-metadata middleware');
 
-  var apiCache = processSwaggerDocuments(rlOrSO, apiDeclarations);
+  var apiCache = processSwaggerDocuments(rlOrSO, apiDeclarations, readyCallback);
   var swaggerVersion = cHelpers.getSwaggerVersion(rlOrSO);
 
   if (_.isUndefined(rlOrSO)) {
